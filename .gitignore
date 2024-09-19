@@ -36,6 +36,7 @@ build/
 *.cache
 *.csproj.user
 *.VC.db
+*.txt
 
 # Ignore other temporary or local files
 *.user
