@@ -1,5 +1,7 @@
 # User Management System (C++)
 
+*WIP*
+
 This project is a **User Management System** implemented in C++ that allows users to sign up, log in, and manage their credentials. The system uses file-based storage (`loginData.txt`) to save user credentials, and passwords are securely hashed using the **SHA-256** algorithm from the Crypto++ library.
 
 ## Features
@@ -32,7 +34,7 @@ This project is a **User Management System** implemented in C++ that allows user
 1. Clone this repository to your local machine:
 
     ```bash
-    git clone <https://github.com/georgiosKachrimanis/LoginApp.git>
+    git clone https://github.com/georgiosKachrimanis/LoginApp.git
     ```
 
 2. Open the project in Visual Studio.
