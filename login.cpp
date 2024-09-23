@@ -6,18 +6,19 @@ using namespace std;
 
 void clearScreen();
 void displayMenu();
-void runMenu(User & user);
+void runMenu(User& user);
 void pauseScreen();
 
 int main()
-{	
+{
 	User user;
+	user.initializeLoginFile();
 	runMenu(user);
 
 	return 0;
 }
 
-void runMenu(User & user)
+void runMenu(User& user)
 {
 	char choice;
 
@@ -54,7 +55,7 @@ void runMenu(User & user)
 
 }
 
-void displayMenu() 
+void displayMenu()
 {
 	clearScreen();
 

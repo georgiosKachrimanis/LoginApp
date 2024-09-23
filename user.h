@@ -4,49 +4,37 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
-#include <sstream>
-#include <iomanip>
-#include <cryptopp/sha.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/hex.h>
-#include <cryptopp/files.h>
-
-
-
-
-using namespace std;
+#include <optional>
 
 class User {
-	private:
-		int userID;
-		string userName;
-		string userEmail;
-		string userPassword;
-		fstream file;
-	public:
-		User();
-		User(string uName, string mail, string pwd);
+private:
+    int userID;
+    std::string userName;
+    std::string userEmail;
+    std::string userPassword;
+    std::fstream file;
+public:
+    User();
+    User(std::string uName, std::string mail, std::string pwd);
 
-		void login();
-		void signUp();
-		void passswordRecovery();
+    void login();
+    void signUp();
+    void passswordRecovery();
 
-		string getUserName()const;
-		string getUserPassword()const;
-		string getUserEmail()const;
+    std::string getUserName() const;
+    std::string getUserPassword() const;
+    std::string getUserEmail() const;
 
-		string getValidatedUsername();
-		string getValidatedPassword();
-		bool findUser(const string& username, const string& password = "");
-		string getValidatedEmail();
+    std::string getValidatedUsername();
+    std::string getValidatedPassword();
+    std::optional<User> findUser(const std::string& username, const std::string& password = "");
+    std::string getValidatedEmail();
 
-		// File operations later on can be seperated to a different class if need it be.
-		bool openFileForReading();
-		bool openFileForWriting();
-		bool appendUserToFile(const User& user);
-
+    // File operations
+    void initializeLoginFile();
+    bool openFileForReading();
+    bool openFileForWriting();
+    bool appendUserToFile(const User& user);
 };
 
-#endif // !USER_H
-
+#endif  // USER_H

@@ -1,5 +1,9 @@
 #include "user.h"
 #include <regex>
+#include <cryptopp/sha.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/files.h>
 
 using namespace std;
 
@@ -69,7 +73,7 @@ void User::signUp()
 
 	if (!tempName.empty() && !tempPassword.empty() && !tempEmail.empty())
 	{
-		if (!findUser(tempName)) {
+		if (!findUser(tempName).has_value()) {
 			User newUser(tempName, tempEmail, sha256(tempPassword));
 
 			if (appendUserToFile(newUser))
@@ -90,6 +94,23 @@ void User::signUp()
 
 void User::passswordRecovery()
 {
+	string searchName, searchEmail;
+
+	cout << "\nEnter Your UserName : ";
+	getline(cin, searchName);
+	searchEmail = getValidatedEmail();
+
+	optional<User> user = findUser(searchName);
+
+	if (user.has_value() && user->getUserEmail() == searchEmail)
+	{
+		cout << "New Password reset link will be send to the email: " << searchEmail;
+	}
+	else
+	{
+		cout << "Invalid username or email. Please try again! " << endl;
+	}
+
 }
 
 string User::getUserName() const
@@ -107,10 +128,10 @@ string User::getUserEmail() const
 	return userEmail;
 }
 
-bool User::findUser(const string& username, const string& password) {
-    string userName, email, storedPassword;
+optional<User> User::findUser(const string& username, const string& password) {
+	string userName, email, storedPassword;
 
-    // Open the file for reading
+	// Open the file for reading
 	if (openFileForReading()) {
 		while (getline(file, userName, '*') && getline(file, email, '*') && getline(file, storedPassword)) {
 			if (userName == username) {
@@ -118,31 +139,31 @@ bool User::findUser(const string& username, const string& password) {
 				if (!password.empty()) {
 					if (storedPassword == password) {
 						file.close();
-						return true;
+						// Return a User object with the found data
+						return User(userName, email, storedPassword);
 					}
 					else {
 						file.close();
-						return false;
+						return std::nullopt;  // Password mismatch
 					}
 				}
 				else {
-					// If no password is provided, we only care about the username
+					// If no password is provided, return user data for further processing (e.g., password recovery)
 					file.close();
-					return true;
+					return User(userName, email, storedPassword);
 				}
 			}
 		}
-
 	}
 
-    file.close();
-	// Username not found!
-    return false;
+	file.close();
+	return std::nullopt;  // Username not found
 }
+
 
 string User::getValidatedUsername() {
 	string tempName;
-	cout << "Enter a username: " << endl;
+	cout << "Enter a username: ";
 	getline(cin, tempName);
 
 	while (findUser(tempName)) {
@@ -155,9 +176,9 @@ string User::getValidatedUsername() {
 
 string User::getValidatedPassword() {
 	string tempPassword1, tempPassword2;
-	cout << "Enter your password: " << endl;
+	cout << "Enter your password: ";
 	getline(cin, tempPassword1);
-	cout << "Please re-enter your password for confirmation: " << endl;
+	cout << "Please re-enter your password for confirmation: ";
 	getline(cin, tempPassword2);
 
 	while (tempPassword1 != tempPassword2) {
@@ -172,9 +193,9 @@ string User::getValidatedEmail() {
 	const regex pattern("[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}");
 	string tempEmail;
 
-	cout << "Enter your email address: \n" << endl;
+	cout << "Enter your email address: ";
 	getline(cin, tempEmail);
-	
+
 	while (!regex_match(tempEmail, pattern))
 	{
 		cout << "The email is not valid. Please try again. \n";
@@ -211,6 +232,24 @@ bool User::appendUserToFile(const User& user) {
 		return true;
 	}
 	return false;
+}
+
+void User::initializeLoginFile() {
+	ifstream file("loginData.txt");
+
+	// If file doesn't exist or couldn't be opened, create it
+	if (!file.is_open()) {
+		ofstream outfile("loginData.txt");  // Create the file
+		if (!outfile) {
+			cout << "Error: Could not create loginData.txt."
+				<< "\nPlease close the app and try again!."
+				<< "\nIf the problem consists please contact the customer support" << endl;
+		}
+		outfile.close();
+	}
+	else {
+		file.close();  // Close if it already exists
+	}
 }
 
 
