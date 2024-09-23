@@ -8,7 +8,8 @@ This project is a **User Management System** written in C++ that allows users to
 - Passwords are securely hashed using the **SHA-256** algorithm, and user data is stored in a text file (`loginData.txt`).
 
 *Just FYI the most difficult part of this project was to make the Cryptopp library to work. If anyone has some tips how I can make it work 100%
-when I install it in new computers I will be really grateful. My laptop is able to use the Crypto library, my normal pc not once!*
+when I install it in new computers I will be really grateful. My laptop is able to use the Crypto library, my normal pc not once!
+You can contact me at georgios.kachrimanis@icloud.com*
 
 
 ## Features
